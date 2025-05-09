@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator BMI</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; margin-bottom: 10px; padding: 10px; }
+        .hasil { margin-top: 20px; padding: 15px; background-color: #e0f7fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kalkulator BMI</h2>
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" placeholder="Masukkan nama">
+
+        <label for="gender">Jenis Kelamin:</label>
+        <select id="gender">
+            <option value="pria">Pria</option>
+            <option value="wanita">Wanita</option>
+        </select>
+
+        <label for="tinggi">Tinggi Badan (cm):</label>
+        <input type="number" id="tinggi" placeholder="Contoh: 170">
+
+        <label for="berat">Berat Badan (kg):</label>
+        <input type="number" id="berat" placeholder="Contoh: 65">
+
+        <button onclick="hitungBMI()">Hitung BMI</button>
+
+        <div id="hasil" class="hasil" style="display: none;"></div>
+    </div>
+
+    <script>
+        function hitungBMI() {
+            const nama = document.getElementById('nama').value;
+            const gender = document.getElementById('gender').value;
+            const tinggi = parseFloat(document.getElementById('tinggi').value);
+            const berat = parseFloat(document.getElementById('berat').value);
+
+            if (!nama || isNaN(tinggi) || isNaN(berat)) {
+                alert("Mohon isi semua data dengan benar.");
+                return;
+            }
+
+            const tinggiM = tinggi / 100;
+            const bmi = berat / (tinggiM * tinggiM);
+            let kategori = "";
+
+            const kategoriBMI = {
+                "pria": [
+                    [0, 18.4, "Kurus"],
+                    [18.5, 24.9, "Normal"],
+                    [25.0, 29.9, "Kelebihan berat badan"],
+                    [30.0, 100, "Obesitas"]
+                ],
+                "wanita": [
+                    [0, 18.0, "Kurus"],
+                    [18.1, 24.4, "Normal"],
+                    [24.5, 29.0, "Kelebihan berat badan"],
+                    [29.1, 100, "Obesitas"]
+                ]
+            };
+
+            for (let [min, max, label] of kategoriBMI[gender]) {
+                if (bmi >= min && bmi <= max) {
+                    kategori = label;
+                    break;
+                }
+            }
+
+            const saran = {
+                "Kurus": "Coba konsultasikan ke ahli gizi untuk menambah berat badan secara sehat.",
+                "Normal": "Pertahankan pola makan dan gaya hidup sehat, ya!",
+                "Kelebihan berat badan": "Pertimbangkan aktivitas fisik rutin dan pola makan seimbang.",
+                "Obesitas": "Sebaiknya konsultasi dengan tenaga medis untuk penanganan lebih lanjut."
+            };
+
+            const hasilDiv = document.getElementById("hasil");
+            hasilDiv.style.display = "block";
+            hasilDiv.innerHTML = `
+                Halo <strong>${nama}</strong>, BMI kamu adalah <strong>${bmi.toFixed(2)}</strong>, 
+                termasuk dalam kategori <strong>${kategori}</strong>.<br><br>
+                <em>Saran:</em> ${saran[kategori]}
+            `;
+        }
+    </script>
+</body>
+</html>
